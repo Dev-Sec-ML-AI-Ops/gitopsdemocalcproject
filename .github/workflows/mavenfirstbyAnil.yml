@@ -26,9 +26,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: setup
       run: mvn -B clean --file pom.xml
-  clean:
+  compile:
     runs-on: ubuntu-latest
     needs: setup
 
@@ -40,8 +40,21 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
+    - name: clean
       run: mvn -B compile --file pom.xml
+  unittesting:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      packages: write
+    needs: compile
+    steps:
+    - run: echo should run unit test
+    - uses: actions/checkout@v4
+    - name: test
+      run: mvn -B test --file pom.xml
+    
   build:
 
     runs-on: ubuntu-latest
